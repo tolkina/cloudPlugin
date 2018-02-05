@@ -1,0 +1,45 @@
+{
+  "key": "${addon.key}",
+  "baseUrl": "${addon.base-url}",
+  "name": "Plugin (Spring Boot)",
+  "authentication": {
+    "type": "jwt"
+  },
+  "lifecycle": {
+    "installed": "/installed",
+    "uninstalled": "/uninstalled"
+  },
+  "scopes": [
+    "READ", "WRITE"
+  ],
+  "vendor": {
+    "name": "Atlassian",
+    "url": "http://www.atlassian.com"
+  },
+  "modules": {
+    "webItems": [
+      {
+        "key": "change-summary-item",
+        "location": "operations-operations",
+        "weight": 10,
+        "name": {
+          "value": "Change Summary"
+        },
+        "url": "/change-summary?issueKey={issue.key}",
+        "conditions": [
+          {
+            "condition": "is_sub_task",
+            "invert": false
+          }
+        ],
+        "target": {
+          "type": "dialog",
+          "options": {
+            "height": "400px",
+            "width": "500px"
+          }
+        }
+      }
+    ]
+  }
+}
