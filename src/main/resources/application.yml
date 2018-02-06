@@ -3,6 +3,6 @@ spring.datasource.url: jdbc:hsqldb:file:addon-db # Use a file-based backing stor
 
 addon:
   key: plugin
-  base-url: https://2f63bbb9.ngrok.io
+  base-url: https://8910553e.ngrok.io
 
 logging.level.com.atlassian.connect.spring: DEBUG

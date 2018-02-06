@@ -11,12 +11,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class SubTaskController {
     @Autowired
     private AtlassianHostRestClients restClients;
+//    private final String uri ="/rest/api/2/issue/";
 
     @GetMapping(value = "/change-summary")
     public ModelAndView changeSummary(@RequestParam String issueKey) {
         ModelAndView model = new ModelAndView();
         model.setViewName("summary");
-        System.out.println(issueKey);
+        model.addObject("issueKey", issueKey);
+//        Object issue = restClients.authenticatedAsAddon().getForObject(uri + issueKey, Object.class);
+//        model.addObject("issue", issue);
         return model;
     }
 }

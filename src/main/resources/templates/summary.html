@@ -1,9 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
+    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.5/css/aui.min.css" media="all"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//aui-cdn.atlassian.com/aui-adg/6.0.5/js/aui.min.js"></script>
     <title>Change Summary</title>
 </head>
-<body>
-<h1>Hello!</h1>
+<body class="aui-page-hybrid">
+<section id="content" role="main">
+    <header class="aui-page-header">
+        <div class="aui-page-header-inner">
+            <div class="aui-page-header-main intro-header">
+                <h1>Change summary</h1>
+            </div>
+        </div>
+    </header>
+    <div class="aui-page-panel main-panel">
+        <div class="aui-page-panel-inner">
+            <section class="aui-page-panel-item">
+                <div class="aui-group">
+                    <div class="aui-item">Issue key <span th:text="${issueKey}"></span>!</div>
+                </div>
+                <div class="sum">
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+<script th:inline="javascript">
+    AP.request({
+        url: '/rest/api/2/issue/' + [[${issueKey}]],
+        type: 'GET',
+        success: function (response) {
+            response = JSON.parse(response);
+            console.log("issueKey " + response.key);
+            $(".sum").append('<div>' + response.fields.summary + '</div>');
+
+        },
+        error: function (xhr, statusText, errorThrown) {
+            console.log(arguments);
+        }
+    });
+</script>
 </body>
 </html>
