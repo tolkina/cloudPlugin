@@ -14,7 +14,7 @@
             <div class="aui-item">Issue key <span th:text="${issueKey}"></span></div>
         </div>
     </div>
-    <div class="aui-field-group">
+    <div class="aui-field-group" id="change">
         <label for="summary">Summary<span class="aui-icon icon-required">required</span></label>
         <input class="text" type="text" id="summary" name="summary" title="Summary"/>
         <div class="hidden" id="error"><span class="aui-error">Enter summary</span></div>
@@ -26,7 +26,7 @@
         type: 'GET',
         success: function (issue) {
             issue = JSON.parse(issue);
-            $("#summary").val(issue.fields.summary);
+            $("#summary").val(issue.fields.status);
         },
         error: function (xhr, statusText, errorThrown) {
             console.log(arguments);
@@ -69,7 +69,7 @@
             },
             error: function (xhr, statusText, errorThrown) {
                 console.log(arguments);
-                $(".fffff").append('<p>' + "Something wrong" + '</p>');
+                $("#change").append('<p>' + "Something wrong" + '</p>');
             },
             contentType: "application/json"
         });

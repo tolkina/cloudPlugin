@@ -43,6 +43,31 @@
             }
           }
         }
+      },
+      {
+        "key": "change-status-item",
+        "location": "operations-operations",
+        "weight": 10,
+        "name": {
+          "value": "Change Status"
+        },
+        "url": "/change-status?issueKey={issue.key}",
+        "conditions": [
+          {
+            "condition": "is_sub_task",
+            "invert": false
+          }
+        ],
+        "target": {
+          "type": "dialog",
+          "options": {
+            "height": "400px",
+            "width": "500px",
+            "header": {
+              "value": "Change status"
+            }
+          }
+        }
       }
     ]
   }

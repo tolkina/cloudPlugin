@@ -22,4 +22,12 @@ public class SubTaskController {
         model.addObject("issue", issue);
         return model;
     }
+
+    @GetMapping(value = "/change-status")
+    public ModelAndView changeStatus(@RequestParam String issueKey) {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("status");
+        model.addObject("issueKey", issueKey);
+        return model;
+    }
 }
