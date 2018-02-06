@@ -10,7 +10,8 @@
     "uninstalled": "/uninstalled"
   },
   "scopes": [
-    "READ", "WRITE"
+    "READ",
+    "WRITE"
   ],
   "vendor": {
     "name": "Atlassian",
@@ -36,7 +37,10 @@
           "type": "dialog",
           "options": {
             "height": "400px",
-            "width": "500px"
+            "width": "500px",
+            "header": {
+              "value": "Change summary"
+            }
           }
         }
       }
