@@ -1,8 +1,13 @@
-spring.jpa.hibernate.ddl-auto: none
-spring.datasource.url: jdbc:hsqldb:file:addon-db # Use a file-based backing store for HSQL
+#spring.jpa.hibernate.ddl-auto: update
+#spring.datasource.url: jdbc:hsqldb:file:addon-db # Use a file-based backing store for HSQL
+
+spring.datasource.url: jdbc:postgresql://localhost/sub-task-plugin
+spring.datasource.username: postgres
+spring.datasource.password: 1111
+spring.jpa.hibernate.ddl-auto: update
 
 addon:
   key: plugin
-  base-url:  https://57f71190.ngrok.io
+  base-url:   https://80fc3fb5.ngrok.io
 
 logging.level.com.atlassian.connect.spring: DEBUG

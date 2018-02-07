@@ -68,6 +68,23 @@
             }
           }
         }
+      },
+      {
+        "key": "config-sub-task-plugin-section-link",
+        "location": "admin_plugins_menu/config-sub-task-plugin-section",
+        "name": {
+          "value": "Configure"
+        },
+        "url": "/configure"
+      }
+    ],
+    "webSections": [
+      {
+        "key": "config-sub-task-plugin-section",
+        "location": "admin_plugins_menu",
+        "name": {
+          "value": "Sub-task plugin"
+        }
       }
     ]
   }

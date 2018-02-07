@@ -1,5 +1,6 @@
-package cloud.controllers;
+package cloud.controller;
 
+import cloud.repository.ProjectKeyRepository;
 import com.atlassian.connect.spring.AtlassianHostRestClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class SubTaskController {
     private final String uri = "/rest/api/2/issue/";
+    private ProjectKeyRepository projectKeyRepository;
     @Autowired
     private AtlassianHostRestClients restClients;
 
@@ -28,6 +30,13 @@ public class SubTaskController {
         ModelAndView model = new ModelAndView();
         model.setViewName("status");
         model.addObject("issueKey", issueKey);
+        return model;
+    }
+
+    @GetMapping(value = "/configure")
+    public ModelAndView configure() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("configure");
         return model;
     }
 }

@@ -22,11 +22,24 @@
 </section>
 <script th:inline="javascript">
     AP.request({
+        url: 'https://80fc3fb5.ngrok.io/configure',
+        type: 'GET',
+        success: function () {
+            console.log("+")
+        },
+        error: function (xhr, statusText, errorThrown) {
+            console.log("-")
+        },
+        contentType: "application/json"
+    });
+
+
+    AP.request({
         url: '/rest/api/2/issue/' + [[${issueKey}]],
         type: 'GET',
         success: function (issue) {
             issue = JSON.parse(issue);
-            $("#summary").val(issue.fields.status);
+            $("#summary").val(issue.fields.summary);
         },
         error: function (xhr, statusText, errorThrown) {
             console.log(arguments);
