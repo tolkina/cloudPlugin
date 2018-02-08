@@ -2,37 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
-    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.5/css/aui.min.css" media="all"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//aui-cdn.atlassian.com/aui-adg/6.0.5/js/aui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-experimental.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
+
     <title>Change Configuration</title>
 </head>
 <body>
-<section id="content" role="main">
+<section id="content" role="main" style="height: 300px">
     <div class="aui-page-header">
         <div class="aui-page-header-main">
-            <div class="aui-item">Config</div>
+            <div class="aui-item">Edit configuration</div>
         </div>
     </div>
-    <div class="aui-field-group">
-        <p>Add projects</p>
+    <div class="aui-content">
+        <form class="aui">
+            <label for="status-select">Select projects</label>
+            <select id="status-select" multiple=""></select>
+        </form>
+    </div>
+    <div class="aui-footer">
+        <button class="aui-button aui-button-primary" id="change-config" name="submit">Button</button>
     </div>
 </section>
 <script th:inline="javascript">
-
-     AP.request({
+    AP.request({
         url: '/rest/api/2/project',
         type: 'GET',
         success: function (projects) {
-            console.log(projects);
+            projects = JSON.parse(projects);
+            $(projects).each(function (index, value) {
+                $("#status-select").append('<option value="' + value.id + '">' + value.key + '</option>');
+            });
         },
         error: function (xhr, statusText, errorThrown) {
-         console.log(arguments);
+            console.log(arguments);
         }
     });
 
+    AJS.$("#status-select").auiSelect2();
 
+    $("#change-config").click(function () {
+        console.log("click");
 
+        $("#status-select option:selected").each(function () {
+            console.log($(this).text());
+        });
+
+        // console.log($("#status-select option:selected"));
+        // AP.request({
+        //     url: '/rest/api/2/project',
+        //     type: 'GET',
+        //     success: function (projects) {
+        //         projects = JSON.parse(projects);
+        //         $(projects).each(function (index, value) {
+        //             $("#status-select").append('<option value="' + value.id + '">' + value.key + '</option>');
+        //             console.log(value.key)
+        //         });
+        //     },
+        //     error: function (xhr, statusText, errorThrown) {
+        //         console.log(arguments);
+        //     }
+        // });
+    });
 </script>
 </body>
 </html>

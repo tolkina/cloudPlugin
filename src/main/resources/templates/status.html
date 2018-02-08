@@ -2,9 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
-    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.5/css/aui.min.css" media="all"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//aui-cdn.atlassian.com/aui-adg/6.0.5/js/aui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-experimental.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
     <title>Change Status</title>
 </head>
 <body>
@@ -22,6 +27,8 @@
     </div>
 </section>
 <script th:inline="javascript">
+    AJS.$("#status-select").auiSelect2();
+
     getTransitions([[${issueKey}]]);
 
     AP.dialog.disableCloseOnSubmit();
@@ -75,9 +82,6 @@
             contentType: "application/json"
         });
     }
-
-    AJS.$("#status-select").auiSelect2();
-
 </script>
 </body>
 </html>
