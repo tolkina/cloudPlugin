@@ -70,12 +70,16 @@
         }
       },
       {
-        "key": "config-sub-task-plugin-section-link",
-        "location": "admin_plugins_menu/config-sub-task-plugin-section",
         "name": {
-          "value": "Configure"
+          "value": "Configuration"
         },
-        "url": "/configure"
+        "key": "config-sub-task-plugin-section-link",
+        "url": "/plugins/servlet/ac/plugin/config",
+        "context": "product",
+        "location": "admin_plugins_menu/config-sub-task-plugin-section",
+        "target": {
+          "type": "page"
+        }
       }
     ],
     "webSections": [
@@ -86,6 +90,14 @@
           "value": "Sub-task plugin"
         }
       }
-    ]
+    ],
+    "configurePage": {
+      "key": "config",
+      "url": "/config",
+      "name": {
+        "value": "Configuration"
+      },
+      "location": "admin_plugins_menu/config-sub-task-plugin-section"
+    }
   }
 }

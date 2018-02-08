@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/6.0.5/css/aui.min.css" media="all"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//aui-cdn.atlassian.com/aui-adg/6.0.5/js/aui.min.js"></script>
-    <title>Config</title>
+    <title>Change Configuration</title>
 </head>
 <body>
 <section id="content" role="main">
@@ -14,20 +14,25 @@
             <div class="aui-item">Config</div>
         </div>
     </div>
-    <div class="aui-field-group" id="change"></div>
+    <div class="aui-field-group">
+        <p>Add projects</p>
+    </div>
 </section>
 <script th:inline="javascript">
-    AP.request({
-        url: '/configure',
+
+     AP.request({
+        url: '/rest/api/2/project',
         type: 'GET',
-        success: function () {
-            console.log("+")
+        success: function (projects) {
+            console.log(projects);
         },
         error: function (xhr, statusText, errorThrown) {
-            console.log("-")
-        },
-        contentType: "application/json"
+         console.log(arguments);
+        }
     });
+
+
+
 </script>
 </body>
 </html>

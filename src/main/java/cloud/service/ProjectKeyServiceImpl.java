@@ -2,7 +2,9 @@ package cloud.service;
 
 import cloud.domain.ProjectKeyEntity;
 import cloud.repository.ProjectKeyRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProjectKeyServiceImpl implements ProjectKeyService {
     private final static Long ENTITY_ID = 1L;
     private ProjectKeyRepository projectKeyRepository;
