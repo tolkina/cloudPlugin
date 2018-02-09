@@ -8,6 +8,6 @@ spring.jpa.hibernate.ddl-auto: update
 
 addon:
   key: plugin
-  base-url:  https://5ad38261.ngrok.io
+  base-url: https://0299ff50.ngrok.io
 
 logging.level.com.atlassian.connect.spring: DEBUG

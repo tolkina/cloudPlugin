@@ -3,18 +3,19 @@ package cloud.controller;
 import cloud.service.ProjectKeyService;
 import com.atlassian.connect.spring.AtlassianHostRestClients;
 import com.atlassian.connect.spring.AtlassianHostUser;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.*;
+import com.squareup.okhttp.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,13 @@ public class SubTaskController {
         return model;
     }
 
+    //    @GetMapping(value = "/config")
+//    public ModelAndView configure() {
+//        ModelAndView model = new ModelAndView();
+//        model.setViewName("configure");
+//        return model;
+//    }
+
     @GetMapping(value = "/change-status")
     public ModelAndView changeStatus(@RequestParam String issueKey) {
         ModelAndView model = new ModelAndView();
@@ -49,51 +57,14 @@ public class SubTaskController {
         return model;
     }
 
-    //    @GetMapping(value = "/config")
-//    public ModelAndView configure() {
-//        ModelAndView model = new ModelAndView();
-//        model.setViewName("configure");
-//        return model;
-//    }
-
-
     @GetMapping(value = "/config")
-    public ModelAndView config(@AuthenticationPrincipal AtlassianHostUser host) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        headers.set("Authorization", "Basic YWxleGFuZHJhLnRvbGtpbmFAZ21haWwuY29tOmZnSGpLbDE1Ng==");
-//
-//        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-//        map.add("Add", "Add");
-//        map.add("addSelectValue", "true");
-//        map.add("addValue", "123456789");
-//        map.add("atl_token", "00c532d0-0dfd-4bf9-9fb5-ccdc561c868e|32586e0b48c960edbf3fa632de4069428a7c5758|lin");
-//        map.add("fieldConfigId", "1032");
-//        map.add("selectedParentOptionId", "");
-//        HttpEntity<MultiValueMap<String, String>> requestMap = new HttpEntity<>(map, headers);
-//
-        String request = "Add=Add&addSelectValue=true&addValue=123456789&atl_token=00c532d0-0dfd-4bf9-9fb5-ccdc561c868e|32586e0b48c960edbf3fa632de4069428a7c5758|lin&fieldConfigId=1032&selectedParentOptionId=";
-//
-//        String s1 = restTemplate.postForObject("/secure/admin/EditCustomFieldOptions!add.jspa", requestMap, String.class);
-        String s = restClients.authenticatedAs(host)
-                .postForObject("/secure/admin/EditCustomFieldOptions!add.jspa", request, String.class);
-
-
-
-
-//        OkHttpClient client = new OkHttpClient();
-//
-//  MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-//        RequestBody body = RequestBody.create(mediaType, "atl_token=");
-//        Request request = new Request.Builder()
-//                .url("https://tolkina.atlassian.net/secure/admin/EditCustomFieldOptions%21add.jspa")
-//                .post(body)
-//                .addHeader("content-type", "application/x-www-form-urlencoded")
-//                .addHeader("cache-control", "no-cache")
-//                .addHeader("postman-token", "c7699c26-b3bc-c539-5897-fa696c4d5abe")
-//                .build();
-//
-//        Response response = client.newCall(request).execute();
+    public ModelAndView config(@AuthenticationPrincipal AtlassianHostUser host) throws IOException {
+        String url = "https://tolkina.atlassian.net/secure/admin/EditCustomFieldOptions!add.jspa";
+        String body = "Add=Add&addSelectValue=true&addValue=zxcv&fieldConfigId=10132&selectedParentOptionId=";
+//        String response = request(url, body);
+//        String response1 = okHttpRequest(url, body);
+//        String response2 = atlassianRequest(url, body, host);
+//        ResponseEntity<String> stringResponseEntity = atlassianRequest2(url);
 
         ModelAndView model = new ModelAndView();
         model.setViewName("configure");
@@ -117,57 +88,89 @@ public class SubTaskController {
         projectKeyService.deleteSubTaskPluginEntity();
         return new ResponseEntity(HttpStatus.OK);
     }
-//    private String request(String targetURL, String body) {
-//
-//        HttpURLConnection connection = null;
-//
-//        try {
-//
-//            URL url = new URL(targetURL);
-//            connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.setRequestProperty("Content-Type",
-//                    "application/json; charset=utf-8");
-//
-//            connection.setRequestProperty("Authorization",
-//                    changeConfigService.get().getSapUrl());
-//
-//            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-//            writer.write(body);
-//            writer.close();
-//
-//
-//            if ((connection.getResponseCode() >= 200) && (connection.getResponseCode() <= 299)) {
-//
-//                InputStream is = connection.getInputStream();
-//                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//                String response;
-//                response = rd.lines().map(line -> line + '\r').collect(Collectors.joining());
-//                rd.close();
-//                return response;
-//
-//
-//            } else {
-//
-//                return null;
-//
-//            }
-//
-//
-//        } catch (Exception e) {
-//
+
+    private String request(String targetURL, String body) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(targetURL);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("X-Atlassian-Token", "no-check");
+            connection.setDoOutput(true);
+//            connection.setRequestProperty("Authorization", "Basic YWxleGFuZHJhLnRvbGtpbmFAZ21haWwuY29tOmZnSGpLbDE1Ng==");
+
+            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
+            writer.write(body);
+            writer.close();
+            if ((connection.getResponseCode() >= 200) && (connection.getResponseCode() <= 299)) {
+                InputStream is = connection.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String response;
+                response = rd.lines().map(line -> line + '\r').collect(Collectors.joining());
+                rd.close();
+                return response;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
 //            log.error("Connection to URL " + targetURL + " failed.");
-//            return null;
-//
-//        } finally {
-//
-//            if (connection != null) {
-//
-//                connection.disconnect();
-//
-//            }
-//
-//        }
-//
-//    }
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+
+        }
+
+    }
+
+    private String okHttpRequest(String targetUrl, String string) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("https://tolkina.atlassian.net/secure/admin/EditCustomFieldOptions%21add.jspa")
+                .post(RequestBody.create(null, string))
+                .addHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+                .addHeader("x-atlassian-token", "no-check")
+                .addHeader("Authorization", "Basic YWxleGFuZHJhLnRvbGtpbmFAZ21haWwuY29tOmZnSGpLbDE1Ng==")
+                .addHeader("cache-control", "no-cache")
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .build();
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful())
+            throw new IOException("Unexpected code " + response);
+        return response.body().string();
+    }
+
+    private String atlassianRequest(String targetUrl, String string, AtlassianHostUser host) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("content-type", "application/x-www-form-urlencoded");
+        headers.set("cache-control", "no-cache");
+        headers.set("x-atlassian-token", "no-check");
+        HttpEntity<String> requestMap = new HttpEntity<>(string, headers);
+        return restClients.authenticatedAs(host).postForObject(targetUrl, requestMap, String.class);
+    }
+
+    private ResponseEntity<String> atlassianRequest2(String targetUrl) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Atlassian-Token", "no-check");
+        headers.set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromHttpUrl(targetUrl)
+                .queryParam("Add", "Add")
+                .queryParam("addSelectValue", "true")
+                .queryParam("addValue", "123456789")
+                .queryParam("fieldConfigId", "10132")
+                .queryParam("selectedParentOptionId", "")
+                .queryParam("atl_token", "qVVKBMh0f1IYf4kIR7aCE5E5");
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        return restClients.authenticatedAsAddon().exchange(
+                uriComponents.build().encode().toUri(),
+                HttpMethod.POST,
+                entity,
+                String.class);
+    }
 }

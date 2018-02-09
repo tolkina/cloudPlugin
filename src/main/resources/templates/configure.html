@@ -10,7 +10,7 @@
     <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
     <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
-
+    <meta name="token" th:content="${atlassianConnectToken}"/>
     <title>Change Configuration</title>
 </head>
 <body>
@@ -45,6 +45,8 @@
         }
     });
 
+
+
     AJS.$("#status-select").auiSelect2();
 
     $("#change-config").click(function () {
@@ -54,21 +56,7 @@
             console.log($(this).text());
         });
 
-        // console.log($("#status-select option:selected"));
-        // AP.request({
-        //     url: '/rest/api/2/project',
-        //     type: 'GET',
-        //     success: function (projects) {
-        //         projects = JSON.parse(projects);
-        //         $(projects).each(function (index, value) {
-        //             $("#status-select").append('<option value="' + value.id + '">' + value.key + '</option>');
-        //             console.log(value.key)
-        //         });
-        //     },
-        //     error: function (xhr, statusText, errorThrown) {
-        //         console.log(arguments);
-        //     }
-        // });
+
     });
 </script>
 </body>
