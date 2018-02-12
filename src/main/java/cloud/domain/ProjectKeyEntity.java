@@ -14,6 +14,9 @@ public class ProjectKeyEntity {
         this.projectKeys = projectKeys;
     }
 
+    public ProjectKeyEntity() {
+    }
+
     public Long getId() {
         return id;
     }

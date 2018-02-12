@@ -10,6 +10,7 @@
     <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
     <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
+    <!--<script type="text/javascript" th:src="@{../js/configure.js}" th:inline="javascript"></script>-->
     <meta name="token" th:content="${atlassianConnectToken}"/>
     <title>Change Configuration</title>
 </head>
@@ -23,7 +24,11 @@
     <div class="aui-content">
         <form class="aui">
             <label for="status-select">Select projects</label>
-            <select id="status-select" multiple=""></select>
+            <select id="status-select" multiple="">
+                <option th:each="projectKey : ${projectKeys}"
+                        th:value="${projectKey}" th:text="${projectKey}" selected="selected">${projectKey}
+                </option>
+            </select>
         </form>
     </div>
     <div class="aui-footer">
@@ -31,13 +36,17 @@
     </div>
 </section>
 <script th:inline="javascript">
+    AJS.$("#status-select").auiSelect2();
+
     AP.request({
         url: '/rest/api/2/project',
         type: 'GET',
         success: function (projects) {
             projects = JSON.parse(projects);
             $(projects).each(function (index, value) {
-                $("#status-select").append('<option value="' + value.id + '">' + value.key + '</option>');
+                if (![[${projectKeys}]].includes(value.key)) {
+                    $("#status-select").append('<option value="' + value.key + '">' + value.key + '</option>');
+                }
             });
         },
         error: function (xhr, statusText, errorThrown) {
@@ -45,18 +54,24 @@
         }
     });
 
-
-
-    AJS.$("#status-select").auiSelect2();
-
     $("#change-config").click(function () {
-        console.log("click");
-
-        $("#status-select option:selected").each(function () {
-            console.log($(this).text());
+        var keys = [];
+        $("#status-select").find("option:selected").each(function () {
+            keys.push($(this).text());
         });
 
-
+        $.ajax({
+            url: "/save-keys",
+            type: 'POST',
+            headers: {"Authorization": "JWT " + [[${atlassianConnectToken}]]},
+            data: {projectKeys: keys},
+            success: function (response) {
+                console.log(response)
+            },
+            error: function (xhr, statusText, errorThrown) {
+                console.log(arguments);
+            }
+        });
     });
 </script>
 </body>
