@@ -1,0 +1,6 @@
+cloud\AddonApplication.class
+cloud\service\ProjectKeyServiceImpl.class
+cloud\service\ProjectKeyService.class
+cloud\controller\SubTaskController.class
+cloud\domain\ProjectKeyEntity.class
+cloud\repository\ProjectKeyRepository.class

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-experimental.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
+    <title>Change Summary</title>
+</head>
+<body>
+<section id="content" role="main">
+    <div class="aui-page-header">
+        <div class="aui-page-header-main">
+            <div class="aui-item">Issue key <span th:text="${issueKey}"></span></div>
+        </div>
+    </div>
+    <div class="aui-field-group" id="change">
+        <label for="summary">Summary<span class="aui-icon icon-required">required</span></label>
+        <input class="text" type="text" id="summary" name="summary" title="Summary"/>
+        <div class="hidden" id="error"><span class="aui-error">Enter summary</span></div>
+    </div>
+</section>
+<script th:inline="javascript">
+    AP.request({
+        url: '/rest/api/2/issue/' + [[${issueKey}]],
+        type: 'GET',
+        success: function (issue) {
+            issue = JSON.parse(issue);
+            $("#summary").val(issue.fields.summary);
+        },
+        error: function (xhr, statusText, errorThrown) {
+            console.log(arguments);
+        }
+    });
+
+    AP.dialog.disableCloseOnSubmit();
+
+    AP.events.on('dialog.button.click', function (data) {
+        if (data.button.name === 'submit') {
+            console.log('submit button pressed');
+            console.log(JSON.stringify(issueData));
+            if (!this.isStringNullOrWhiteSpace($("#summary").val())) {
+                var issueData = {
+                    "update": {
+                        "summary": [
+                            {
+                                "set": $("#summary").val()
+                            }
+                        ]
+                    }
+                };
+                updateSummary(issueData);
+            }
+            else {
+                $("#error").show();
+            }
+        }
+    });
+
+    function updateSummary(summary) {
+        AP.request({
+            url: '/rest/api/2/issue/' + [[${issueKey}]],
+            type: 'PUT',
+            data: JSON.stringify(summary),
+            success: function () {
+                console.log("Issue updated");
+                AP.navigator.reload();
+                AP.dialog.close();
+            },
+            error: function (xhr, statusText, errorThrown) {
+                console.log(arguments);
+                $("#change").append('<p>' + "Something wrong" + '</p>');
+            },
+            contentType: "application/json"
+        });
+    }
+
+    function isStringNullOrEmpty(val) {
+        switch (val) {
+            case "":
+            case 0:
+            case "0":
+            case null:
+            case false:
+            case undefined:
+            case typeof this === 'undefined':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    function isStringNullOrWhiteSpace(val) {
+        return this.isStringNullOrEmpty(val) || val.replace(/\s/g, "") === '';
+    }
+
+</script>
+</body>
+</html>

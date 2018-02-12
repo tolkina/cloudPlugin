@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-experimental.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
+    <!--<script type="text/javascript" th:src="@{../js/configure.js}" th:inline="javascript"></script>-->
+    <meta name="token" th:content="${atlassianConnectToken}"/>
+    <title>Change Configuration</title>
+</head>
+<body>
+<section id="content" role="main" style="height: 300px">
+    <div class="aui-page-header">
+        <div class="aui-page-header-main">
+            <div class="aui-item">Edit configuration</div>
+        </div>
+    </div>
+    <div class="aui-content">
+        <form class="aui">
+            <label for="status-select">Select projects</label>
+            <select id="status-select" multiple="">
+                <option th:each="projectKey : ${projectKeys}"
+                        th:value="${projectKey}" th:text="${projectKey}" selected="selected">${projectKey}
+                </option>
+            </select>
+        </form>
+    </div>
+    <div class="aui-footer">
+        <button class="aui-button aui-button-primary" id="change-config" name="submit">Button</button>
+    </div>
+</section>
+<script th:inline="javascript">
+    AJS.$("#status-select").auiSelect2();
+
+    AP.request({
+        url: '/rest/api/2/project',
+        type: 'GET',
+        success: function (projects) {
+            projects = JSON.parse(projects);
+            $(projects).each(function (index, value) {
+                if (![[${projectKeys}]].includes(value.key)) {
+                    $("#status-select").append('<option value="' + value.key + '">' + value.key + '</option>');
+                }
+            });
+        },
+        error: function (xhr, statusText, errorThrown) {
+            console.log(arguments);
+        }
+    });
+
+    $("#change-config").click(function () {
+        var keys = [];
+        $("#status-select").find("option:selected").each(function () {
+            keys.push($(this).text());
+        });
+
+        $.ajax({
+            url: "/save-keys",
+            type: 'POST',
+            headers: {"Authorization": "JWT " + [[${atlassianConnectToken}]]},
+            data: {projectKeys: keys},
+            success: function (response) {
+                console.log(response)
+            },
+            error: function (xhr, statusText, errorThrown) {
+                console.log(arguments);
+            }
+        });
+    });
+</script>
+</body>
+</html>

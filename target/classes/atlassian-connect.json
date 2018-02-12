@@ -1,0 +1,104 @@
+{
+  "key": "${addon.key}",
+  "baseUrl": "${addon.base-url}",
+  "name": "Plugin (Spring Boot)",
+  "authentication": {
+    "type": "jwt"
+  },
+  "lifecycle": {
+    "installed": "/installed",
+    "uninstalled": "/uninstalled"
+  },
+  "scopes": [
+    "READ",
+    "WRITE",
+    "ACT_AS_USER"
+  ],
+  "vendor": {
+    "name": "Atlassian",
+    "url": "http://www.atlassian.com"
+  },
+  "modules": {
+    "webItems": [
+      {
+        "key": "change-summary-item",
+        "location": "operations-operations",
+        "weight": 10,
+        "name": {
+          "value": "Change Summary"
+        },
+        "url": "/change-summary?issueKey={issue.key}",
+        "conditions": [
+          {
+            "condition": "is_sub_task",
+            "invert": false
+          }
+        ],
+        "target": {
+          "type": "dialog",
+          "options": {
+            "height": "400px",
+            "width": "500px",
+            "header": {
+              "value": "Change summary"
+            }
+          }
+        }
+      },
+      {
+        "key": "change-status-item",
+        "location": "operations-operations",
+        "weight": 10,
+        "name": {
+          "value": "Change Status"
+        },
+        "url": "/change-status?issueKey={issue.key}",
+        "conditions": [
+          {
+            "condition": "is_sub_task",
+            "invert": false
+          }
+        ],
+        "target": {
+          "type": "dialog",
+          "options": {
+            "height": "400px",
+            "width": "500px",
+            "header": {
+              "value": "Change status"
+            }
+          }
+        }
+      },
+      {
+        "name": {
+          "value": "Configuration"
+        },
+        "key": "config-sub-task-plugin-section-link",
+        "url": "/plugins/servlet/ac/plugin/config",
+        "context": "product",
+        "location": "admin_plugins_menu/config-sub-task-plugin-section",
+        "target": {
+          "type": "page"
+        }
+      }
+    ],
+    "webSections": [
+      {
+        "key": "config-sub-task-plugin-section",
+        "location": "admin_plugins_menu",
+        "name": {
+          "value": "Sub-task plugin"
+        }
+      }
+    ],
+    "configurePage": {
+      "key": "config",
+      "url": "/config",
+      "name": {
+        "value": "Configuration"
+      },
+      "location": "admin_plugins_menu/config-sub-task-plugin-section"
+    }
+  }
+}

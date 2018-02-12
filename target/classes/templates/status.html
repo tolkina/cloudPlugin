@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{${atlassianConnectAllJsUrl}}" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-experimental.js"></script>
+    <script src="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/js/aui-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/@atlassian/aui@7.6.3/dist/aui/css/aui-experimental.css"/>
+    <title>Change Status</title>
+</head>
+<body>
+<section id="content" role="main">
+    <div class="aui-page-header">
+        <div class="aui-page-header-main">
+            <div class="aui-item">Issue key <span th:text="${issueKey}"></span></div>
+        </div>
+    </div>
+    <div class="aui-field-group" id="change">
+        <form class="aui">
+            <label for="status-select">Status</label>
+            <select id="status-select"></select>
+        </form>
+    </div>
+</section>
+<script th:inline="javascript">
+    AJS.$("#status-select").auiSelect2();
+
+    getTransitions([[${issueKey}]]);
+
+    AP.dialog.disableCloseOnSubmit();
+
+    AP.events.on('dialog.button.click', function (data) {
+        if (data.button.name === 'submit') {
+            console.log('submit button pressed');
+            doTransition([[${issueKey}]], $("#status-select option:selected").val())
+        }
+    });
+
+    function doTransition(issueKey, transitionId) {
+        var transitionData = {
+            "transition": {
+                "id": transitionId
+            }
+        };
+        AP.request({
+            url: '/rest/api/2/issue/' + issueKey + '/transitions',
+            type: 'POST',
+            data: JSON.stringify(transitionData),
+            success: function () {
+                console.log("Transition Done");
+                AP.navigator.reload();
+                AP.dialog.close();
+            },
+            error: function (xhr, statusText, errorThrown) {
+                console.log(arguments);
+                $("#change").append('<p>' + "Something wrong" + '</p>');
+            },
+            contentType: "application/json"
+        });
+    }
+
+    function getTransitions(issueKey) {
+        AP.request({
+            url: '/rest/api/2/issue/' + issueKey + '/transitions?expand=transitions.fields',
+            type: 'GET',
+            success: function (statuses) {
+                statuses = JSON.parse(statuses).transitions;
+                $(statuses).each(function (index, value) {
+                    $("#status-select").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+                return statuses;
+            },
+            error: function (xhr, statusText, errorThrown) {
+                console.log(arguments);
+                $("#change").append('<p>' + "Something wrong" + '</p>');
+                return [];
+            },
+            contentType: "application/json"
+        });
+    }
+</script>
+</body>
+</html>
